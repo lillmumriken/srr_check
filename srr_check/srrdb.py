@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import requests
-from os import path
+from os import path, mkdir
 
 apiurl = "https://www.srrdb.com/api"
 
@@ -31,6 +31,11 @@ def download(relname, filename):
     ext = path.splitext(filename)[-1]
     if ext not in [".jpg", ".nfo", ".sfv"]:
         return False
+    # Extract first folder of the path (this would contain filename if no dir)
+    folder = filename.split('/')[0]
+    # Check that it's not a file and the path does not exist already
+    if not '.' in folder and not path.exists(folder):
+        mkdir(folder)
     url = f"https://www.srrdb.com/download/file/{relname}/{filename}"
     r = requests.get(url, allow_redirects=True)
     if r.status_code != 200:
